@@ -11,6 +11,7 @@
 
 <script>
 import http from '@/http'
+import md5 from 'md5'
 
 export default {
   name: 'login',
@@ -24,9 +25,14 @@ export default {
     confirm () {
       http.post('/login', {
         email: this.email,
-        password: this.pwd
+        password: md5(this.pwd)
       }).then(resp => {
-        this.$router.push({ name: 'Articles' })
+        console.log('TCL: confirm -> resp', resp)
+        if (resp.data.status === 0) {
+          const userId = resp.data.UserID
+          this.$cookie.set('user_id', userId)
+          this.$router.push({ name: 'Articles' })
+        }
       })
     },
     goToReg () {

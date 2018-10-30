@@ -11,6 +11,7 @@
 
 <script>
 import http from '@/http'
+import md5 from 'md5'
 
 export default {
   name: 'reg',
@@ -28,12 +29,12 @@ export default {
     confirm () {
       http.post('/register', {
         email: this.email,
-        password: this.pwd
+        password: md5(this.pwd)
       }).then(resp => {
-        if (resp.status === 0) {
+        if (resp.data.status === 0) {
           http.post('/login', {
             email: this.email,
-            password: this.pwd
+            password: md5(this.pwd)
           }).then(resp => {
             this.$router.push({ name: 'Articles' })
           })

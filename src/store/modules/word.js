@@ -1,4 +1,5 @@
 import http from '@/http'
+import cookie from 'vue-cookie'
 
 const state = {
   words: {}
@@ -12,7 +13,8 @@ const mutations = {
 
 const actions = {
   getWords ({ commit }) {
-    http.get('/highlight?user=1')
+    const userId = cookie.get('user_id')
+    http.get(`/highlight?user=${userId}`)
       .then(resp => commit('setWords', resp.data.words_list))
   }
 }
