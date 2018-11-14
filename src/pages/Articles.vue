@@ -27,7 +27,9 @@ export default {
     getToday () {
       http.get('/today')
         .then(resp => this.$store.commit('setArticles', resp.data.result_article))
-      this.$store.dispatch('getWords')
+        .then(() => {
+          this.$store.dispatch('getWords')
+        })
     }
   }
 }

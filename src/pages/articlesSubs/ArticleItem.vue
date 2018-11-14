@@ -18,7 +18,7 @@
     <!-- Popup -->
     <div v-show="popupDisplay" class="popup" :style="{ top: popupTop, left: popupLeft }">
       <div class="darken_it" @click="darkenIt">Collect</div>
-      <div class="close_popup" @click="popupDisplay = false">x</div>
+      <div class="close_popup" @click="closePopup">x</div>
     </div>
   </div>
 </template>
@@ -43,7 +43,8 @@ export default {
       popupTop: 0,
       popupLeft: 0,
       popupDisplay: false,
-      popupWord: ''
+      popupWord: '',
+      targetEle: null
     }
   },
   computed: {
@@ -61,7 +62,15 @@ export default {
       })
       if (index !== -1) return 'level_' + this.words[articleWordVal.toLowerCase()]
     },
+    activateTarget (target) {
+      this.targetEle = target
+      this.targetEle.classList.add('active')
+    },
+    deactivateTarget () {
+      this.targetEle.classList.remove('active')
+    },
     clickWord (word, event) {
+      this.activateTarget(event.target)
       const maxLeft = window.innerWidth - 108
       let left = event.target.offsetLeft
       if (left > maxLeft) left = maxLeft
@@ -76,6 +85,11 @@ export default {
           this.$store.dispatch('getWords')
           this.popupDisplay = false
         })
+      this.deactivateTarget()
+    },
+    closePopup () {
+      this.popupDisplay = false
+      this.deactivateTarget()
     }
   }
 }
@@ -116,6 +130,11 @@ export default {
     font-size: 15px;
     .word_val {
       cursor: default;
+      &.active {
+        background-color: #efefef;
+        border-radius: 2px;
+        color: #000;
+      }
       &.level_1 {
         border-bottom: 0.5px solid $level_1_color;
       }

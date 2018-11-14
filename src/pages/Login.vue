@@ -21,13 +21,21 @@ export default {
       pwd: ''
     }
   },
+  mounted () {
+    this.checkLoginStatus()
+  },
   methods: {
+    checkLoginStatus () {
+      const cookieUserId = this.$cookie.get('user_id')
+      if (cookieUserId !== null) {
+        this.$router.push({ name: 'Articles' })
+      }
+    },
     confirm () {
       http.post('/login', {
         email: this.email,
         password: md5(this.pwd)
       }).then(resp => {
-        console.log('TCL: confirm -> resp', resp)
         if (resp.data.status === 0) {
           const userId = resp.data.UserID
           this.$cookie.set('user_id', userId)
