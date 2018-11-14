@@ -80,7 +80,8 @@ export default {
       this.popupDisplay = true
     },
     darkenIt () {
-      http.post('/highlight?user=1', { word: this.popupWord })
+      const userId = this.$cookie.get('user_id')
+      http.post(`/highlight?user=${userId}`, { word: this.popupWord })
         .then(() => {
           this.$store.dispatch('getWords')
           this.popupDisplay = false
