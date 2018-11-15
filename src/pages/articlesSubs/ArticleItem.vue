@@ -67,9 +67,12 @@ export default {
       this.targetEle.classList.add('active')
     },
     deactivateTarget () {
-      this.targetEle.classList.remove('active')
+      if (this.targetEle) {
+        this.targetEle.classList.remove('active')
+      }
     },
     clickWord (word, event) {
+      this.deactivateTarget()
       this.activateTarget(event.target)
       const maxLeft = window.innerWidth - 108
       let left = event.target.offsetLeft
