@@ -36,7 +36,11 @@ export default {
             email: this.email,
             password: md5(this.pwd)
           }).then(resp => {
-            this.$router.push({ name: 'Articles' })
+            if (resp.data.status === 0) {
+              const userId = resp.data.UserID
+              this.$cookie.set('user_id', userId)
+              this.$router.push({ name: 'Articles' })
+            }
           })
         }
       })
