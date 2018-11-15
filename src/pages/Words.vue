@@ -2,9 +2,9 @@
   <div class="words_container">
     <app-header />
     <div class="words_main">
-      <div class="word_item" :class="'level_' + words[key]" v-for="key in wordsKeys" :key="key">
-        <div class="val">{{key}}</div>
-        <div class="count">{{words[key]}}</div>
+      <div class="word_item" :class="'level_' + word.count" v-for="word in sortedWords" :key="word.val">
+        <div class="val">{{word.val}}</div>
+        <div class="count">{{word.count}}</div>
       </div>
     </div>
   </div>
@@ -17,12 +17,23 @@ export default {
   components: {
     AppHeader
   },
+  created () {
+    this.$store.dispatch('getWords')
+  },
   computed: {
     words () {
       return this.$store.state.word.words
     },
     wordsKeys () {
       return Object.keys(this.words)
+    },
+    sortedWords () {
+      return this.wordsKeys.map(key => {
+        return {
+          val: key,
+          count: this.words[key]
+        }
+      }).sort((a, b) => b.count - a.count)
     }
   }
 }

@@ -20,8 +20,10 @@ export default {
       return this.$store.state.article.articles
     }
   },
-  created () {
-    this.getToday()
+  mounted () {
+    if (!this.articles.length) {
+      this.getToday()
+    }
   },
   methods: {
     getToday () {
