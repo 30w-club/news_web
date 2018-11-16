@@ -6,7 +6,7 @@
 </template>
 <script>
 import AppHeader from '../components/AppHeader'
-import ArticleItem from './articlesSubs/ArticleItem'
+import ArticleItem from './articles/ArticleItem'
 import http from '../http'
 
 export default {

@@ -4,8 +4,8 @@ import cookies from 'vue-cookie'
 
 const instance = process.env.BASE_URL
   ? axios.create({ baseUrl: process.env.BASE_URL })
-  : axios.create({ baseURL: 'http://119.27.184.184/api' })
-  // : axios.create({ baseURL: 'http://www.maiya.com/api' })
+  // : axios.create({ baseURL: 'http://119.27.184.184/api' })
+  : axios.create({ baseURL: 'http://read.itwork.club/api' })
 
 instance.interceptors.response.use(resp => {
   console.log('TCL: resp', resp)

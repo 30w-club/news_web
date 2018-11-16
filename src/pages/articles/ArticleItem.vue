@@ -55,7 +55,21 @@ export default {
       return Object.keys(this.words)
     }
   },
+  mounted () {
+    this.addWindowClickListener()
+  },
+  destroyed () {
+    console.log('destroyed')
+    document.removeEventListener('click', this.documentListener)
+  },
   methods: {
+    documentListener () {
+      console.log(1)
+      this.closePopup()
+    },
+    addWindowClickListener () {
+      document.addEventListener('click', this.documentListener)
+    },
     checkLevel (articleWordVal) {
       const index = this.wordsKeys.findIndex(value => {
         return value.toLowerCase() === articleWordVal.toLowerCase()
@@ -72,6 +86,7 @@ export default {
       }
     },
     clickWord (word, event) {
+      event.stopPropagation()
       this.deactivateTarget()
       this.activateTarget(event.target)
       const maxLeft = window.innerWidth - 108
@@ -82,16 +97,17 @@ export default {
       this.popupLeft = left + 'px'
       this.popupDisplay = true
     },
-    darkenIt () {
+    darkenIt (event) {
+      event.stopPropagation()
       const userId = this.$cookie.get('user_id')
       http.post(`/highlight?user=${userId}`, { word: this.popupWord })
         .then(() => {
           this.$store.dispatch('getWords')
-          this.popupDisplay = false
+          this.closePopup()
         })
-      this.deactivateTarget()
     },
-    closePopup () {
+    closePopup (event) {
+      if (event) event.stopPropagation()
       this.popupDisplay = false
       this.deactivateTarget()
     }
@@ -120,18 +136,18 @@ export default {
   .desc {
     font-size: 13px;
     color: #000;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     font-weight: bold;
   }
   .words {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
   .word_wrap {
-    line-height: 30px;
+    line-height: 32px;
     margin-right: 5px;
-    font-size: 15px;
+    font-size: 17px;
     .word_val {
       cursor: default;
       &.active {
