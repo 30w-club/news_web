@@ -1,25 +1,31 @@
 <template>
   <div class="article_container">
-    <div class="article_title">{{a.title}}</div>
     <div class="img_wrap">
       <img class="article_image" :src="a.image_url" alt="">
+      <div class="article_title">{{a.title}}</div>
     </div>
 
-    <div class="desc">{{a.description}}</div>
+    <!-- <div class="desc">{{a.description}}</div> -->
 
-    <div>
+    <div class="main" :class="{ 'with_popup': popupDisplay }">
       <div class="paragraph words" v-for="(p, index) in a.content" :key="index">
         <div class="word_wrap" v-for="(a_word, index) in p" :key="index">
           <span class="word_val" @click="clickWord(word_val, $event)" :class="checkLevel(word_val)" v-for="(word_val, index) in a_word" :key="index">{{word_val}}</span>
         </div>
       </div>
+
+      <!-- Popup -->
+      <div v-show="popupDisplay" class="popup" :style="{}">
+        <div class="close_popup" @click="closePopup">
+          <i class="fa fa-close"></i>
+        </div>
+        <div class="meaning" :class="{ 'with_meaning': meaning }">{{meaning}}</div>
+        <div class="darken_it" @click="darkenIt">
+          <i class="fa fa-heart"></i>
+        </div>
+      </div>
     </div>
 
-    <!-- Popup -->
-    <div v-show="popupDisplay" class="popup" :style="{ top: popupTop, left: popupLeft }">
-      <div class="darken_it" @click="darkenIt">Collect</div>
-      <div class="close_popup" @click="closePopup">x</div>
-    </div>
   </div>
 </template>
 
@@ -44,7 +50,8 @@ export default {
       popupLeft: 0,
       popupDisplay: false,
       popupWord: '',
-      targetEle: null
+      targetEle: null,
+      meaning: ''
     }
   },
   computed: {
@@ -86,16 +93,23 @@ export default {
       }
     },
     clickWord (word, event) {
+      this.getMeaning(word)
       event.stopPropagation()
       this.deactivateTarget()
       this.activateTarget(event.target)
-      const maxLeft = window.innerWidth - 108
-      let left = event.target.offsetLeft
-      if (left > maxLeft) left = maxLeft
       this.popupWord = word
-      this.popupTop = (event.target.offsetTop - 30) + 'px'
-      this.popupLeft = left + 'px'
+      // this.popupTop = (event.target.offsetTop - 30) + 'px'
       this.popupDisplay = true
+    },
+    getMeaning (word) {
+      this.meaning = ''
+      http.get(`/lookup?word=${word}`).then(resp => {
+        if (resp.data.status === 0) {
+          if (resp.data.Definitions) {
+            this.meaning = resp.data.Definitions[0] || ''
+          }
+        }
+      })
     },
     darkenIt (event) {
       event.stopPropagation()
@@ -119,18 +133,55 @@ export default {
 @import '@/styles/index.scss';
 
 .article_container {
-  margin-top: 25px;
-  .article_title {
-    text-align: center;
-    font-size: 17px;
-    font-weight: bold;
-    // border-bottom: .5px solid rgb(240, 240, 240);
-    margin-bottom: 10px;
-  }
   .img_wrap {
-    margin-top: 5px;
+    position: relative;
     .article_image {
       width: 100%;
+      vertical-align: middle;
+    }
+    .article_title {
+      text-align: left;
+      width: 90%;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.08);
+      font-size: 56px;
+      position: absolute;
+      bottom: 80px;
+      left: 5%;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      border-radius: 3px;
+      font-family: 'Roboto', sans-serif;
+      @include respond-to('small') {
+        background-color: rgba(0, 0, 0, 0.2);
+        font-size: 24px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        padding: 5px 10px;
+      }
+    }
+  }
+  .main {
+    position: relative;
+    background-color: #fff;
+    width: 90%;
+    margin: -50px auto 0;
+    padding: 30px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    border-radius: 3px;
+    color: rgba(0, 0, 0, .84);
+    margin-bottom: 50px;
+    @include respond-to('small') {
+      width: 100%;
+      margin-top: 0;
+      padding: 14px;
+      box-shadow: 0 1px 1px rgba(0,0,0,.15);
+    }
+    &.with_popup {
+      color: rgba(0, 0, 0, .15);
     }
   }
   .desc {
@@ -145,14 +196,15 @@ export default {
     margin-bottom: 30px;
   }
   .word_wrap {
-    line-height: 32px;
+    line-height: 1.58;
     margin-right: 5px;
-    font-size: 17px;
+    font-size: 21px;
+    @include respond-to('small') {
+      font-size: 17px;
+    }
     .word_val {
       cursor: default;
       &.active {
-        background-color: #efefef;
-        border-radius: 2px;
         color: #000;
       }
       &.level_1 {
@@ -179,33 +231,51 @@ export default {
     }
   }
   .popup {
-    position: absolute;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: #ffffff;
-    border: 0.5px solid #dfdfdf;
     color: #6e6e6e;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    border-radius: 100px;
-    padding: 3px 5px 3px 12px;
-    box-shadow: 0px 0px 10px 1px rgb(221, 221, 221);
-    .darken_it {
-      margin-right: 12px;
-      font-size: 13px;
-      cursor: pointer;
-      &:hover {
-        color: #2c2c2c;
-      }
-    }
+    box-shadow: 0px -1px 11px 0px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    transition: all 0.25s ease;
     .close_popup {
       cursor: pointer;
       width: 22px;
-      height: 22px;
-      border: 1px solid #ffffff;
+      line-height: 40px;
       text-align: center;
+      width: 100%;
+      background-color: #f1f1f1;
+      cursor: pointer;
       &:hover {
         color: #272727;
         border: 1px solid #ddd;
         border-radius: 100px;
+      }
+    }
+    .meaning {
+      font-family: 'Amiri', serif;
+      box-sizing: border-box;
+      font-size: 14px;
+      text-align: center;
+      &.with_meaning {
+        padding: 5px;
+      }
+    }
+    .darken_it {
+      font-size: 13px;
+      background-color: #f1f1f1;
+      width: 100%;
+      line-height: 40px;
+      text-align: center;
+      cursor: pointer;
+      i {
+        color: #b64343;
       }
     }
   }

@@ -43,8 +43,9 @@ export default {
 @import '@/styles/index.scss';
 
 .words_container {
+  padding-top: 50px;
   .words_main {
-    margin-top: 25px;
+    padding: 5px;
     .word_item {
       display: flex;
       justify-content: space-between;

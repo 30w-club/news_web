@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import VueCookie from 'vue-cookie'
+import 'font-awesome/scss/font-awesome.scss'
 
 Vue.use(VueCookie)
 
