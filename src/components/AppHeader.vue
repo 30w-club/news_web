@@ -48,8 +48,8 @@ export default {
   padding: 0 5%;
   height: 50px;
   box-sizing: border-box;
-  box-shadow: 0 1px 20px #bcbcbc;
-  // border-bottom: .5px solid rgb(235, 235, 235);
+  // box-shadow: 0 1px 20px #bcbcbc;
+  border-bottom: .5px solid rgb(235, 235, 235);
   font-size: 12px;
   color: #8f8f8f;
   .menu_container {

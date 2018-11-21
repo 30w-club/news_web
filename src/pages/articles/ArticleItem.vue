@@ -144,7 +144,7 @@ export default {
       width: 90%;
       color: #fff;
       background-color: rgba(0, 0, 0, 0.08);
-      font-size: 56px;
+      font-size: 46px;
       position: absolute;
       bottom: 80px;
       left: 5%;
@@ -154,7 +154,7 @@ export default {
       font-family: 'Roboto', sans-serif;
       @include respond-to('small') {
         background-color: rgba(0, 0, 0, 0.2);
-        font-size: 24px;
+        font-size: 18px;
         bottom: 0;
         left: 0;
         right: 0;
