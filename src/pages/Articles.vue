@@ -33,25 +33,16 @@ export default {
             let articles = [...resp.data.result_article]
             articles = articles.map(article => {
               let tmpArticle = {...article}
-              // const imageUrl = article.image_url.split('/')
-              // const picUrl = imageUrl[imageUrl.length - 1]
-              tmpArticle.image_url = `https://read.itwork.club/api/getpic?pic_url=${encodeURIComponent(article.image_url)}`
+              tmpArticle.image_info = `https://read.itwork.club/api/getpic?image_info=${encodeURIComponent(article.image_info)}`
               return tmpArticle
             })
 
             this.$store.commit('setArticles', articles)
-            // const imageUrls = articles.map(article => article.image_url)
-            // this.getImageSrc(imageUrls)
           }
         })
         .then(() => {
           this.$store.dispatch('getWords')
         })
-    },
-    getImageSrc (urls) {
-      urls.forEach(url => {
-        http.get(`/getpic?pic_url=${encodeURIComponent(url)}`).then(resp => console.log(resp))
-      })
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="article_container">
     <div class="img_wrap">
-      <img class="article_image" :src="a.image_url" alt="">
+      <img class="article_image" :src="a.image_info" alt="">
       <div class="article_title">{{a.title}}</div>
     </div>
 
