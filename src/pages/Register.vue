@@ -26,24 +26,23 @@ export default {
     console.log('​mounted -> token', token)
   },
   methods: {
-    confirm () {
-      http.post('/register', {
+    async confirm () {
+      const respReg = await http.post('/register', {
         email: this.email,
         password: md5(this.pwd)
-      }).then(resp => {
-        if (resp.data.status === 0) {
-          http.post('/login', {
-            email: this.email,
-            password: md5(this.pwd)
-          }).then(resp => {
-            if (resp.data.status === 0) {
-              const userId = resp.data.UserID
-              this.$cookie.set('user_id', userId)
-              this.$router.push({ name: 'Articles' })
-            }
-          })
-        }
       })
+
+      if (respReg.data.status === 0) {
+        const respLogin = await http.post('/login', {
+          email: this.email,
+          password: md5(this.pwd)
+        })
+        if (respLogin.data.status === 0) {
+          const userId = respLogin.data.UserID
+          this.$cookie.set('user_id', userId)
+          this.$router.push({ name: 'Articles' })
+        }
+      }
     },
     goToLogin () {
       this.$router.push({ name: 'Login' })

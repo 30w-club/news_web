@@ -101,24 +101,25 @@ export default {
       // this.popupTop = (event.target.offsetTop - 30) + 'px'
       this.popupDisplay = true
     },
-    getMeaning (word) {
+    async getMeaning (word) {
       this.meaning = ''
-      http.get(`/lookup?word=${word}`).then(resp => {
-        if (resp.data.status === 0) {
-          if (resp.data.Definitions) {
-            this.meaning = resp.data.Definitions[0] || ''
-          }
+      const respMeaning = await http.get(`/lookup?word=${word}`)
+
+      if (respMeaning.data.status === 0) {
+        if (respMeaning.data.Definitions) {
+          this.meaning = respMeaning.data.Definitions[0] || ''
         }
-      })
+      }
     },
-    darkenIt (event) {
+    async darkenIt (event) {
       event.stopPropagation()
       const userId = this.$cookie.get('user_id')
-      http.post(`/highlight?user=${userId}`, { word: this.popupWord })
-        .then(() => {
-          this.$store.dispatch('getWords')
-          this.closePopup()
-        })
+      const respHighlight = await http.post(`/highlight?user=${userId}`, { word: this.popupWord })
+
+      if (respHighlight.data.status === 0) {
+        this.$store.dispatch('getWords')
+        this.closePopup()
+      }
     },
     closePopup (event) {
       if (event) event.stopPropagation()

@@ -31,17 +31,17 @@ export default {
         this.$router.push({ name: 'Articles' })
       }
     },
-    confirm () {
-      http.post('/login', {
+    async confirm () {
+      const respLogin = await http.post('/login', {
         email: this.email,
         password: md5(this.pwd)
-      }).then(resp => {
-        if (resp.data.status === 0) {
-          const userId = resp.data.UserID
-          this.$cookie.set('user_id', userId)
-          this.$router.push({ name: 'Articles' })
-        }
       })
+
+      if (respLogin.data.status === 0) {
+        const userId = respLogin.data.UserID
+        this.$cookie.set('user_id', userId)
+        this.$router.push({ name: 'Articles' })
+      }
     },
     goToReg () {
       this.$router.push({ name: 'Register' })

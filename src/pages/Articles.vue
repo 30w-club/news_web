@@ -26,23 +26,21 @@ export default {
     }
   },
   methods: {
-    getToday () {
-      http.get('/today')
-        .then(resp => {
-          if (resp.data.status === 0) {
-            let articles = [...resp.data.result_article]
-            articles = articles.map(article => {
-              let tmpArticle = {...article}
-              tmpArticle.image_info = `https://read.itwork.club/api/getpic?image_info=${encodeURIComponent(article.image_info)}`
-              return tmpArticle
-            })
-
-            this.$store.commit('setArticles', articles)
-          }
-        })
-        .then(() => {
-          this.$store.dispatch('getWords')
-        })
+    setAarticles (articles) {
+      const finalArticles = articles.map(article => {
+        let tmpArticle = {...article}
+        tmpArticle.image_info = `https://read.itwork.club/api/getpic?image_info=${encodeURIComponent(article.image_info)}`
+        return tmpArticle
+      })
+      this.$store.commit('setArticles', finalArticles)
+    },
+    async getToday () {
+      const respToday = await http.get('/today')
+      if (respToday.data.status === 0) {
+        const articles = [...respToday.data.result_article]
+        this.setAarticles(articles)
+        this.$store.dispatch('getWords')
+      }
     }
   }
 }

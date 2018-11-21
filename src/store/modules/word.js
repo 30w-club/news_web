@@ -12,10 +12,13 @@ const mutations = {
 }
 
 const actions = {
-  getWords ({ commit }) {
+  async getWords ({ commit }) {
     const userId = cookie.get('user_id')
-    http.get(`/highlight?user=${userId}`)
-      .then(resp => commit('setWords', resp.data.words_list))
+    const respWords = await http.get(`/highlight?user=${userId}`)
+
+    if (respWords.data.status === 0) {
+      commit('setWords', respWords.data.words_list)
+    }
   }
 }
 
