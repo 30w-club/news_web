@@ -114,7 +114,7 @@ export default {
     async darkenIt (event) {
       event.stopPropagation()
       const userId = this.$cookie.get('user_id')
-      const respHighlight = await http.post(`/highlight?user=${userId}`, { word: this.popupWord })
+      const respHighlight = await http.post(`/highlight?user_id=${userId}`, { word: this.popupWord })
 
       if (respHighlight.data.status === 0) {
         this.$store.dispatch('getWords')
@@ -253,11 +253,6 @@ export default {
       width: 100%;
       background-color: #f1f1f1;
       cursor: pointer;
-      &:hover {
-        color: #272727;
-        border: 1px solid #ddd;
-        border-radius: 100px;
-      }
     }
     .meaning {
       font-family: 'Amiri', serif;

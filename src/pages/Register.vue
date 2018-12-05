@@ -38,8 +38,8 @@ export default {
           password: md5(this.pwd)
         })
         if (respLogin.data.status === 0) {
-          const userId = respLogin.data.UserID
-          this.$cookie.set('user_id', userId)
+          this.$cookie.set('user_id', respLogin.data.user_id)
+          this.$cookie.set('token', respLogin.data.token)
           this.$router.push({ name: 'Articles' })
         }
       }

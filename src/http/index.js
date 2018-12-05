@@ -6,6 +6,13 @@ const instance = process.env.BASE_URL
   ? axios.create({ baseUrl: process.env.BASE_URL })
   // : axios.create({ baseURL: 'http://119.27.184.184/api' })
   : axios.create({ baseURL: '/api' })
+// const instance = axios.create({ baseURL: '/api' })
+
+instance.interceptors.request.use(config => {
+  const token = cookies.get('token')
+  if (token) config.headers['Authorization'] = token
+  return config
+})
 
 instance.interceptors.response.use(resp => {
   console.log('TCL: resp', resp)
